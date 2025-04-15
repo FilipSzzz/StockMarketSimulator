@@ -26,7 +26,7 @@ class Portfolio{
 
     public double calculateStockValue(){
         for(Stock i : stocksInPortfolio.keySet()){
-            return 2.333;
+            return 2.333; // TODO: implement this method
         }
         return 0;
     }

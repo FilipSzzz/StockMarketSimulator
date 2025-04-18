@@ -24,11 +24,12 @@ class Portfolio{
         return Collections.unmodifiableMap(stocksInPortfolio);
     }
 
-    public double calculateStockValue(){
-        for(Stock i : stocksInPortfolio.keySet()){
-            return 2.333; // TODO: implement this method
+    public double calculateStockValue() {
+        double totalValue = 0.0;
+        for (Map.Entry<Stock, Integer> entry : stocksInPortfolio.entrySet()) {
+            totalValue += entry.getValue() * entry.getKey().getInitialPrice();
         }
-        return 0;
+        return totalValue;
     }
     public double calculateTotalValue(){
         return calculateStockValue() + getCash();

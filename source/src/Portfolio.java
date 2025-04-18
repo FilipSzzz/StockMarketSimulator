@@ -7,10 +7,10 @@ class Portfolio{
     private Map<Stock, Integer> stocksInPortfolio;
 
     public Portfolio(double initialCash){
-        this.cash = cash;
+        this.cash = initialCash;
         this.stocksInPortfolio = new HashMap<>();
     }
-    void addStock(Stock stock, int quantity){
+    public void addStock(Stock stock, int quantity){
         if(stocksInPortfolio.containsKey(stock)){
             quantity += quantity;
         }else{

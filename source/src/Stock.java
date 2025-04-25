@@ -25,7 +25,7 @@ class Stock {
         return Objects.equals(symbol, stock.symbol); // jezeli obiekt jest typu Stock porowniuje symbol obiektu z symbolem biezacego obiektu, zwraca true jezeli sa takie same
     }
     @Override
-    public int hashCode() {
-        return Objects.hashCode(symbol);
+    public int hashCode() { // zwraca hash na podstawie pola symbol, potrzebne jest to do przechowywania obiektow w HashMap, HashSet
+        return Objects.hashCode(symbol); // oznacza to ze wszystkie obiekty Stock z tym samym symbolem bedzie mial ten sam hashCode
     }
 }

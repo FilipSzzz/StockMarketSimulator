@@ -19,15 +19,13 @@ class Stock {
     public double getInitialPrice(){
         return this.initialPrice;
     }
-    @Override                                                   // wygenerowane przez IDE nadpisanie metody equals i hashCode
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) return false;
-        Stock stock = (Stock) object;
-        return Double.compare(initialPrice, stock.initialPrice) == 0 && Objects.equals(symbol, stock.symbol) && Objects.equals(name, stock.name);
-    }
-
     @Override
-    public int hashCode() { // zwraca unikalna wartość liczbową typu int dla każdego unikalnego obiektu
-        return Objects.hash(symbol, name, initialPrice);
+    public boolean equals(Object object) {
+        if (!(object instanceof Stock stock)) return false;
+        return Objects.equals(symbol, stock.symbol);
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(symbol);
     }
 }

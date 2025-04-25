@@ -27,7 +27,7 @@ class Stock {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode() { // zwraca unikalna wartość liczbową typu int dla każdego unikalnego obiektu
         return Objects.hash(symbol, name, initialPrice);
     }
 }

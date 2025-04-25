@@ -9,10 +9,6 @@ public class StockMarketSimStage1 {
         portfolio.addStock(stock3, 100);
         double stockValue = portfolio.calculateStockValue();
         double totalValue = portfolio.calculateTotalValue();
-        if(portfolio.getCash() < 0){
-            System.out.println("Nie masz wystarczającej ilości gotówki na koncie!");
-            return;
-        }
         System.out.println("--- Stan Portfela ---");
         System.out.println("Gotówka: " + portfolio.getCash());
         System.out.println("Posiadane akcje:");

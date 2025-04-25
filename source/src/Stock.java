@@ -20,9 +20,9 @@ class Stock {
         return this.initialPrice;
     }
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Stock stock)) return false;
-        return Objects.equals(symbol, stock.symbol);
+    public boolean equals(Object object) { // nadpisana metoda equals, wygenerowana przez IDE
+        if (!(object instanceof Stock stock)) return false; // jezeli objekt jest instancja klasy to zwraca false 
+        return Objects.equals(symbol, stock.symbol); // jezeli obiekt jest typu Stock porowniuje symbol obiektu z symbolem biezacego obiektu, zwraca true jezeli sa takie same
     }
     @Override
     public int hashCode() {

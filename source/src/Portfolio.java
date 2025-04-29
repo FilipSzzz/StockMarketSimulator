@@ -11,8 +11,9 @@ class Portfolio{
         this.stocksInPortfolio = new HashMap<>();
     }
     public void addStock(Stock stock, int quantity){
-        if(stocksInPortfolio.containsKey(stock)){ // spradza czy stock jest w mapie, jezeli jest to dodaje quantity. Jezeli nie to dodaje nowy wpisy do mapy(stock, quantity)
-            quantity += quantity;
+        if(stocksInPortfolio.containsKey(stock)){ 
+            int currentQuantity = stocksInPortfolio.get(stock);
+            stocksInPortfolio.put(stock, currentQuantity + quantity);
         }else{
             stocksInPortfolio.put(stock, quantity);
         }

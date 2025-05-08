@@ -1,31 +1,15 @@
 import java.util.Objects;
 
-class Stock {
-    private String symbol;
-    private String name;
-    private double initialPrice;
+class Stock extends Asset {
+    public Stock(String symbol, String name, double currentPrice) {
+        super(symbol, name, currentPrice);
+    }
 
-    public Stock(String symbol, String name, double initialPrice ){
-        this.symbol = symbol;
-        this.name = name;
-        this.initialPrice = initialPrice;
-    }
-    public String getSymbol(){
-        return this.symbol;
-    }
-    public String getName(){
-        return this.name;
-    }
-    public double getInitialPrice(){
-        return this.initialPrice;
-    }
     @Override
-    public boolean equals(Object object) { // nadpisana metoda equals, wygenerowana przez IDE
-        if (!(object instanceof Stock stock)) return false; // jezeli objekt jest instancja klasy to zwraca false
-        return Objects.equals(symbol, stock.symbol); // jezeli obiekt jest typu Stock porowniuje symbol obiektu z symbolem biezacego obiektu, zwraca true jezeli sa takie same
-    }
-    @Override
-    public int hashCode() { // zwraca hash na podstawie pola symbol, potrzebne jest to do przechowywania obiektow w HashMap, HashSet
-        return Objects.hashCode(symbol); // oznacza to ze wszystkie obiekty Stock z tym samym symbolem bedzie mial ten sam hashCode
+    public void updatePrice() {
+        this.currentPrice *= (1.0 + (Math.random() - 0.5) * 0.1);
+        if (this.currentPrice < 0) {
+            this.currentPrice = 0;
+        }
     }
 }

@@ -13,7 +13,7 @@ class Portfolio {
 
     public void addAsset(Asset asset, int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
+            throw new IllegalArgumentException("Musi byc wieksze od 0");
         }
         String symbol = asset.getSymbol();
         if (positions.containsKey(symbol)) {

@@ -1,4 +1,3 @@
-import java.util.Objects;
 
 class Stock extends Asset {
     public Stock(String symbol, String name, double currentPrice) {

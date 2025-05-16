@@ -25,7 +25,7 @@ public class StockMarketSimStage2 {
             System.out.println("-----------------------------------------");
         }
 
-        System.out.println("Stan końcowy portfela:");
+        System.out.println("Wartosc portfela:");
         portfolio.getPositions().forEach((symbol, position) ->
                 System.out.println(symbol + ": " + position.quantity() + " jednostek, aktualna cena: " + position.asset().getCurrentPrice())
         );

@@ -13,8 +13,9 @@ public class StockMarketSimStage2 {
         portfolio.addAsset(marketAssets.get(2), 5); // 5 obligacji
 
         for (int step = 1; step <= 10; step++) {
-            marketAssets.forEach(asset -> asset.updatePrice()); // lambda, skrocona wersja for(Asset asset: marketAssets) { asset.updatePrice();}
-
+            for (Asset asset : marketAssets) {
+                asset.updatePrice();
+            }
             double portfolioValue = portfolio.calculateAssetsValue();
 
             System.out.println("Krok " + step + " - Wartość portfela: " + portfolioValue);

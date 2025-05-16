@@ -8,10 +8,6 @@ public class Bond extends Asset {
         }
         this.interestRate = interestRate;
     }
-    public double getInterestRate() {
-        return interestRate;
-    }
-
     @Override
     public void updatePrice() {
         this.currentPrice += this.currentPrice * (interestRate / 100.0);

@@ -14,7 +14,7 @@ public class StockMarketSimStage3 {
         market.addAsset(new Stock("NVI", "Nvidia", 180.0));
         market.addAsset(new Stock("CDP", "CD PROJECT", 250));
         market.addAsset(new Stock("APL", "Apple", 300));
-        market.addAsset(new Bond("ABC", "ABC", 100.0,2));
+        market.addAsset(new Bond("EDO", "EDO", 100.0,5));
 
         Portfolio portfolio = new Portfolio(30000);
 
@@ -43,6 +43,12 @@ public class StockMarketSimStage3 {
             System.out.println("Sprzedano 5 akcji Nvidia");
         } catch (InsufficientAssetsException | AssetNotFoundException e) {
             System.out.println("Błąd przy sprzedaży NVI: " + e.getMessage());
+        }
+        try {
+            portfolio.buy("EDO", 10, market);
+            System.out.println("Kupiono 10 obligacji EDO");
+        } catch ( InsufficientFundsException | AssetNotFoundException e) {
+            System.out.println("Błąd przy sprzedaży EDO: " + e.getMessage());
         }
         try{
             portfolio.sell("APL", 3, market);

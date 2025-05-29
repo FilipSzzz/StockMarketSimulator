@@ -1,3 +1,5 @@
+package com.stockmarket.model;
+
 import java.util.Objects;
 
 public abstract class Asset {
@@ -5,9 +7,10 @@ public abstract class Asset {
     protected String name;
     protected double currentPrice;
 
-    public Asset(String symbol, String name, double currentPrice) {
+    public Asset(String symbol, String name, double currentPrice) { // konstruktor ktory rzuca IllegalArgumentException dla blednych danych
         if (symbol == null || symbol.isEmpty() || name == null || name.isEmpty() || currentPrice <= 0) {
             throw new IllegalArgumentException("Niepoprawne dane");
+
         }
         this.symbol = symbol;
         this.name = name;
@@ -26,7 +29,9 @@ public abstract class Asset {
         return currentPrice;
     }
 
-    public abstract void updatePrice();
+    public abstract void updatePrice(); //Oznacza, że każda podklasa musi zaimplementować tę metodę,
+    // w której będzie określony sposób aktualizacji ceny (np. losowy dla akcji, procentowy dla obligacji).
+
 
     @Override
     public boolean equals(Object object) {

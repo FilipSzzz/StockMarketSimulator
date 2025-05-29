@@ -1,3 +1,7 @@
+package com.stockmarket.model;
+
+import com.stockmarket.portfolio.Portfolio;
+
 public class StockMarketSimStage1 {
     public static void main(String[] args){
         Stock stock1 = new Stock("CDR","CD Project", 300);

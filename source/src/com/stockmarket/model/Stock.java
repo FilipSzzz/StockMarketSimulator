@@ -1,6 +1,7 @@
-import java.util.Objects;
+package com.stockmarket.model;
+import com.stockmarket.market.Tradable;
 
-class Stock extends Asset {
+public class Stock extends Asset implements Tradable {
     public Stock(String symbol, String name, double currentPrice) {
         super(symbol, name, currentPrice);
     }

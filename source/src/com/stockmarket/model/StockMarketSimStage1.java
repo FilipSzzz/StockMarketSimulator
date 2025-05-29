@@ -32,10 +32,10 @@ public class StockMarketSimStage1 {
 //        }
 
         // Ponowne obliczenie wartości portfela
-        double updatedStockValue = portfolio.calculateStockValue();
+//        double updatedStockValue = portfolio.calculateStockValue();
         double updatedTotalValue = portfolio.calculateTotalValue();
         System.out.println("\n--- Zaktualizowany stan portfela ---");
-        System.out.println("Wartość akcji: " + updatedStockValue);
+//        System.out.println("Wartość akcji: " + updatedStockValue);
         System.out.println("Wartość całkowita portfela: " + updatedTotalValue);
     }
 }

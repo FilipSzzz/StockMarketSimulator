@@ -1,6 +1,8 @@
 package com.stockmarket.model;
 
-public class Bond extends Asset {
+import com.stockmarket.market.Tradable;
+
+public class Bond extends Asset implements Tradable {
     private int interestRate;
 
     public Bond(String symbol, String name, double currentPrice, int interestRate) {
@@ -13,5 +15,11 @@ public class Bond extends Asset {
     @Override
     public void updatePrice() {
         this.currentPrice += this.currentPrice * (interestRate / 100.0);
+    }
+    public String getSymbol() {
+        return symbol;
+    }
+    public double getCurrentPrice() {
+        return currentPrice;
     }
 }

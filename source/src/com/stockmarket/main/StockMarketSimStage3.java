@@ -12,34 +12,51 @@ public class StockMarketSimStage3 {
     public static void main(String[] args) {
         Market market = new Market();
         market.addAsset(new Stock("NVI", "Nvidia", 180.0));
-        market.addAsset(new Stock("CDP", "CD PROJECT", 2700.0));
+        market.addAsset(new Stock("CDP", "CD PROJECT", 250));
+        market.addAsset(new Stock("APL", "Apple", 300));
         market.addAsset(new Bond("ABC", "ABC", 100.0,2));
 
-        Portfolio portfolio = new Portfolio(10000.0);
+        Portfolio portfolio = new Portfolio(30000);
 
         try {
-            portfolio.buy("AAPL", 10, market);
-            System.out.println("Kupiono 10 akcji AAPL");
+            portfolio.buy("NVI", 10, market);
+            System.out.println("Kupiono 10 akcji Nvidia");
         } catch (InsufficientFundsException | AssetNotFoundException e) {
-            System.out.println("Błąd przy zakupie AAPL: " + e.getMessage());
+            System.out.println("Błąd przy zakupie NVI: " + e.getMessage());
+        }
+        try{
+            portfolio.buy("APL",10,market);
+            System.out.println("Kupiono 10 akcji Apple");
+        } catch (InsufficientFundsException | AssetNotFoundException e) {
+            System.out.println("Błąd przy zakupie APL: " + e.getMessage());
         }
 
         try {
-            portfolio.buy("GOOGL", 2, market);
-            System.out.println("Kupiono 2 akcje GOOGL");
+            portfolio.buy("CDP", 20, market);
+            System.out.println("Kupiono 20 akcji Cd Project");
         } catch (InsufficientFundsException | AssetNotFoundException e) {
-            System.out.println("Błąd przy zakupie GOOGL: " + e.getMessage());
+            System.out.println("Błąd przy zakupie CDP: " + e.getMessage());
         }
 
         try {
-            portfolio.sell("AAPL", 5, market);
-            System.out.println("Sprzedano 5 akcji AAPL");
+            portfolio.sell("NVI", 5, market);
+            System.out.println("Sprzedano 5 akcji Nvidia");
         } catch (InsufficientAssetsException | AssetNotFoundException e) {
-            System.out.println("Błąd przy sprzedaży AAPL: " + e.getMessage());
+            System.out.println("Błąd przy sprzedaży NVI: " + e.getMessage());
         }
-
-        // Symulacja zmian cen i obserwacja wartości portfela
-        for (int i = 0; i < 5; i++) {
+        try{
+            portfolio.sell("APL", 3, market);
+            System.out.println("Sprzedano 3 akcje Apple");
+        } catch (InsufficientAssetsException | AssetNotFoundException e) {
+            System.out.println("Błąd przy sprzedaży APL: " + e.getMessage());
+        }
+        try {
+            portfolio.sell("CDP", 5, market);
+            System.out.println("Sprzedano 5 akcji Cd Project");
+        } catch (InsufficientAssetsException | AssetNotFoundException e) {
+            System.out.println("Błąd przy sprzedaży CDP: " + e.getMessage());
+        }
+        for (int i = 0; i < 10; i++) {
             market.updatePrices();
             double totalValue = portfolio.calculateTotalValue();
             System.out.printf("Po aktualizacji %d: Wartość portfela: %.2f zł\n", i + 1, totalValue);

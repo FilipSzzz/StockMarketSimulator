@@ -24,13 +24,16 @@ public class Portfolio {
         if (quantity <= 0) {
             throw new IllegalArgumentException("Ilosc musi byc wieksza od 0");
         }
+        if (symbol == null || symbol.isEmpty()) {
+            throw new IllegalArgumentException("Symbol nie moze byc pusty");
+        }
         Optional<Asset> optionalAsset = market.getAsset(symbol);
         if (optionalAsset.isEmpty()) {
             throw new AssetNotFoundException("Nie znaleziono aktywa o symbolu: " + symbol);
         }
         Asset asset = optionalAsset.get();
         if (!(asset instanceof Tradable)) {
-            throw new AssetNotFoundException("Asset is not tradable: " + symbol);
+            throw new AssetNotFoundException("Aktywem nie jest implementacja Tradeable: " + symbol);
         }
         double price = ((Tradable) asset).getCurrentPrice();
         double cost = quantity * price;
@@ -38,12 +41,12 @@ public class Portfolio {
             throw new InsufficientFundsException("Niewystarczajace srodki na zakup aktywa: " + symbol);
         }
         cash -= cost;
-        addToPositions(asset, quantity);
+        addAsset(asset, quantity);
     }
 
     public void sell(String symbol, int quantity, Market market) throws InsufficientAssetsException, AssetNotFoundException {
         if (!positions.containsKey(symbol)) {
-            throw new AssetNotFoundException("Asset not found in portfolio: " + symbol);
+            throw new AssetNotFoundException("Nie znaleziono w portfolio : " + symbol);
         }
         PortfolioPosition position = positions.get(symbol);
         if (quantity <= 0 || quantity > position.quantity()) {
@@ -57,37 +60,12 @@ public class Portfolio {
         if (!(asset instanceof Tradable)) {
             throw new AssetNotFoundException("Asset is not tradable: " + symbol);
         }
-        double price = ((Tradable) asset).getCurrentPrice();
-        double proceeds = quantity * price;
-        cash += proceeds;
-        removeFromPositions(symbol, quantity);
+        double cena = ((Tradable) asset).getCurrentPrice();
+        double zysk = quantity * cena;
+        cash += zysk;
+        removeAsset(asset, quantity);
     }
-
-    private void addToPositions(Asset asset, int quantity) {
-        String symbol = asset.getSymbol();
-        if (positions.containsKey(symbol)) {
-            PortfolioPosition existingPosition = positions.get(symbol);
-            int updatedQuantity = existingPosition.quantity() + quantity;
-            positions.put(symbol, new PortfolioPosition(asset, updatedQuantity));
-        } else {
-            positions.put(symbol, new PortfolioPosition(asset, quantity));
-        }
-    }
-
-    private void removeFromPositions(String symbol, int quantity) {
-        PortfolioPosition position = positions.get(symbol);
-        int remaining = position.quantity() - quantity;
-        if (remaining > 0) {
-            positions.put(symbol, new PortfolioPosition(position.asset(), remaining));
-        } else {
-            positions.remove(symbol);
-        }
-    }
-
     public void addAsset(Asset asset, int quantity) {
-        if (quantity <= 0) {
-            throw new IllegalArgumentException("Quantity must be greater than 0");
-        }
         String symbol = asset.getSymbol();
         if (positions.containsKey(symbol)) {
             PortfolioPosition existingPosition = positions.get(symbol);
@@ -97,15 +75,23 @@ public class Portfolio {
             positions.put(symbol, new PortfolioPosition(asset, quantity));
         }
     }
-
-    public double getCash() {
-        return cash;
+    public void removeAsset(Asset asset, int quantity) throws AssetNotFoundException {
+        String symbol = asset.getSymbol();
+        if(positions.containsKey(symbol)) {
+            PortfolioPosition existingPosition = positions.get(symbol);
+            int updatedQuantity = existingPosition.quantity() - quantity;
+            if (updatedQuantity <= 0) {
+                positions.remove(symbol);
+            } else {
+                positions.put(symbol, new PortfolioPosition(asset, updatedQuantity));
+            }
+        } else {
+            throw new AssetNotFoundException("Nie znaleziono aktywa w portfelu: " + symbol);
+        }
     }
-
     public Map<String, PortfolioPosition> getPositions() {
         return Collections.unmodifiableMap(positions);
     }
-
     public double calculateAssetsValue() {
         double totalValue = 0.0;
         for (PortfolioPosition position : positions.values()) {
@@ -113,12 +99,7 @@ public class Portfolio {
         }
         return totalValue;
     }
-
     public double calculateTotalValue() {
-        return calculateAssetsValue() + getCash();
-    }
-
-    public double calculateStockValue() {
-        return 0;
+        return cash + calculateAssetsValue();
     }
 }

@@ -19,6 +19,9 @@ public class Portfolio {
         this.cash = initialCash;
         this.positions = new HashMap<>();
     }
+    public Portfolio() {
+        this.positions = new HashMap<>();
+    }
 
     public void buy(String symbol, int quantity, Market market) throws InsufficientFundsException, AssetNotFoundException {
         if (quantity <= 0) {
@@ -89,8 +92,12 @@ public class Portfolio {
             throw new AssetNotFoundException("Nie znaleziono aktywa w portfelu: " + symbol);
         }
     }
+    public double getCash() {
+        return cash;
+    }
+
     public Map<String, PortfolioPosition> getPositions() {
-        return Collections.unmodifiableMap(positions);
+        return positions;
     }
     public double calculateAssetsValue() {
         double totalValue = 0.0;

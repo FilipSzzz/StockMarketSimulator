@@ -12,6 +12,9 @@ public class Stock extends Asset implements Tradable {
             this.currentPrice = 0;
         }
     }
+    public Stock() {
+        super();
+    }
     public String getSymbol() {
         return symbol;
     }

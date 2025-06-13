@@ -12,6 +12,10 @@ public class Bond extends Asset implements Tradable {
         }
         this.interestRate = interestRate;
     }
+    public Bond() {
+        super();
+        this.interestRate = 0;
+    }
     @Override
     public void updatePrice() {
         this.currentPrice += this.currentPrice * (interestRate / 100.0);

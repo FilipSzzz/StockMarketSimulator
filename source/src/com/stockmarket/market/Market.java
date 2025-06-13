@@ -1,6 +1,8 @@
 package com.stockmarket.market;
 import com.stockmarket.model.Asset;
+import com.stockmarket.persistence.AssetRepository;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Market {
@@ -8,26 +10,23 @@ public class Market {
     public Market() {
         assetMap = new HashMap<>();
     }
-    public Market(List<Asset>assets){
-        assetMap = new HashMap<>();
-        for(Asset asset : assets){
-            assetMap.put(asset.getSymbol(), asset);
-        }
+    public Market(AssetRepository assetRepository) throws FileNotFoundException {
+        this.assetMap = assetRepository.loadAssetDefinitions(); // laduje aktywa z repozytorium
     }
 
-    public Optional<Asset> getAsset(String symbol){      // szuka asset po symbolu, assetMap laczy wartosc z obiektami Asset
-        return Optional.ofNullable(assetMap.get(symbol)); // pobiera symbol z assetMap, jezeli nie znajdzie takiego zwraca null
-    } // jezeli aktywo o podanym symbolu znajduje sie w mapie ta metoda zwraca to aktywo
-    public void updatePrices(){
-        for(Asset asset : assetMap.values()){
-            asset.updatePrice();
-        }
-    }
-    public Map<String, Asset> getAllAssets() { // zwraca kopie mapy z aktywami, by uniknac modyfikacji
-        return Collections.unmodifiableMap(new HashMap<>(assetMap));
+    public Map<String, Asset> getAssetMap() {
+        return assetMap;
     }
 
-    public void addAsset(Asset asset) {
-        assetMap.put(asset.getSymbol(), asset);
+    public Optional<Asset> getAsset(String symbol) {
+        return Optional.ofNullable(assetMap.get(symbol));
+    }
+
+    public void updateAssetPrices() {
+        for (Asset asset : assetMap.values()) {
+            if (asset instanceof Tradable tradable) {
+                tradable.updatePrice();
+            }
+        }
     }
 }

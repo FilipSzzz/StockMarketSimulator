@@ -16,6 +16,11 @@ public abstract class Asset {
         this.name = name;
         this.currentPrice = currentPrice;
     }
+    public Asset(){
+        this.symbol = "";
+        this.name = "";
+        this.currentPrice = 0.0;
+    }
 
     public String getSymbol() {
         return symbol;

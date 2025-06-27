@@ -1,25 +1,33 @@
 package com.stockmarket.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.util.Objects;
 
+// umozliwia serializacje do json
+@JsonTypeInfo(
+        use = JsonTypeInfo.Id.NAME,
+        include = JsonTypeInfo.As.PROPERTY,
+        property = "type"
+)
+@JsonSubTypes({
+        @JsonSubTypes.Type(value = Stock.class, name = "STOCK"),
+        @JsonSubTypes.Type(value = Bond.class, name = "BOND")
+})
 public abstract class Asset {
     protected String symbol;
     protected String name;
     protected double currentPrice;
 
-    public Asset(String symbol, String name, double currentPrice) { // konstruktor ktory rzuca IllegalArgumentException dla blednych danych
-        if (symbol == null || symbol.isEmpty() || name == null || name.isEmpty() || currentPrice <= 0) {
-            throw new IllegalArgumentException("Niepoprawne dane");
-
-        }
+    public Asset(String symbol, String name, double currentPrice) throws IllegalArgumentException {
         this.symbol = symbol;
         this.name = name;
         this.currentPrice = currentPrice;
-    }
-    public Asset(){
-        this.symbol = "";
-        this.name = "";
-        this.currentPrice = 0.0;
+
+        if (currentPrice < 0) {
+            throw new IllegalArgumentException("Cena akcji nie może być ujemna: " + currentPrice);
+        }
     }
 
     public String getSymbol() {
@@ -33,19 +41,20 @@ public abstract class Asset {
     public double getCurrentPrice() {
         return currentPrice;
     }
-
-    public abstract void updatePrice(); //Oznacza, że każda podklasa musi zaimplementować tę metodę,
-    // w której będzie określony sposób aktualizacji ceny (np. losowy dla akcji, procentowy dla obligacji).
-
+    public abstract void updatePrice();
 
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof Asset asset)) return false;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Asset asset = (Asset) o;
         return Objects.equals(symbol, asset.symbol);
     }
-
     @Override
     public int hashCode() {
-        return Objects.hashCode(symbol);
+        return symbol != null ? symbol.hashCode() : 0;
     }
+
+
 }

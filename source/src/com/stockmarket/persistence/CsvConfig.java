@@ -12,12 +12,16 @@ public class CsvConfig {
     public static Path getAssetsPath() {
         return ASSETS_PATH;
     }
+    public static boolean ifExists(){
+        return Files.exists(ASSETS_PATH);
+    }
 
     public static void initializeAssetsCsv() throws IOException {
-        if (!Files.exists(ASSETS_PATH)) {
+        if(!ifExists()) {
+            Files.createDirectories(ASSETS_PATH.getParent());
             Files.createFile(ASSETS_PATH);
-            String header = "symbol,name,type,initial_price\n";
-            Files.writeString(ASSETS_PATH, header);
+        }else{
+
         }
     }
 }

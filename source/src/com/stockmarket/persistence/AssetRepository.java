@@ -5,5 +5,5 @@ import com.stockmarket.model.Asset;
 import java.util.Map;
 
 public interface AssetRepository  {
-    Map<String, Asset> loadAssetDefinitions();
+    Map<String, Asset> loadAssetDefinitions() throws Exception;
 }

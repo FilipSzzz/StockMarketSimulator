@@ -1,29 +1,43 @@
 package com.stockmarket.model;
 
 import com.stockmarket.market.Tradable;
+import com.stockmarket.model.Asset;
 
 public class Bond extends Asset implements Tradable {
-    private int interestRate;
 
-    public Bond(String symbol, String name, double currentPrice, int interestRate) {
+    private double interestRate;
+
+    public Bond(String symbol, String name, double currentPrice, double interestRate) {
         super(symbol, name, currentPrice);
-        if (interestRate < 0) {
-            throw new IllegalArgumentException("Stopa procentowa nie może być ujemna");
-        }
         this.interestRate = interestRate;
+        if (interestRate <= 0) {
+            throw new IllegalArgumentException("Stopa procentowa musi być dodatnia: " + interestRate);
+        }
     }
+
     public Bond() {
-        super();
-        this.interestRate = 0;
+        super("", "", 0);
+        if (interestRate < 0) {
+            throw new IllegalArgumentException("Stopa procentowa musi być dodatnia: " + interestRate);
+        }
     }
+
     @Override
     public void updatePrice() {
-        this.currentPrice += this.currentPrice * (interestRate / 100.0);
+        currentPrice *= (1 + interestRate);
+        if (currentPrice < 0) {
+            currentPrice = 0;
+        }
     }
-    public String getSymbol() {
-        return symbol;
+
+    @Override
+    public String toString() {
+        return "Bond{" +
+                "currentPrice=" + String.format("%.2f", currentPrice) +
+                ", interestRate=" +  interestRate +
+                '}';
     }
-    public double getCurrentPrice() {
-        return currentPrice;
-    }
+
+    @Override public String getSymbol() { return symbol; }
+    @Override public double getCurrentPrice() { return currentPrice; }
 }

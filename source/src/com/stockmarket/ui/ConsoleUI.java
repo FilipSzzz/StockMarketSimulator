@@ -1,135 +1,124 @@
 package com.stockmarket.ui;
 
+import com.stockmarket.portfolio.*;
 import com.stockmarket.market.Market;
-import com.stockmarket.model.Asset;
-import com.stockmarket.persistence.PortfolioService;
-import com.stockmarket.portfolio.Portfolio;
-import com.stockmarket.portfolio.PortfolioPosition;
-import com.stockmarket.exception.AssetNotFoundException;
-import com.stockmarket.exception.InsufficientAssetsException;
-import com.stockmarket.exception.InsufficientFundsException;
-
 import java.util.Scanner;
-
 public class ConsoleUI {
-    private final PortfolioService portfolioService;
+    private Portfolio portfolio;
     private final Market market;
-    private Portfolio currentPortfolio;
+    private final PortfolioService portfolioService;
     private final Scanner scanner = new Scanner(System.in);
 
-    public ConsoleUI(PortfolioService portfolioService, Market market) {
-        this.portfolioService = portfolioService;
+    public ConsoleUI(Portfolio portfolio, Market market, PortfolioService service) {
+        this.portfolio = portfolio;
         this.market = market;
-        this.currentPortfolio = portfolioService.load().orElse(new Portfolio(30000));
+        this.portfolioService = service;
     }
 
     public void start() {
-        boolean exit = false;
-        System.out.println("STOCK MARKET SIMULATOR");
-        while (!exit) {
-            printMenu();
-            int choice = readInt("Wybierz opcję: ");
-            switch (choice) {
-                case 1 -> displayMarket();
-                case 2 -> handleBuyAction();
-                case 3 -> handleSellAction();
-                case 4 -> displayPortfolio();
-                case 5 -> handleUpdatePrices();
-                case 6 -> handleSaveAction();
-                case 7 -> exit = handleExit();
+        while (true) {
+            System.out.println("""
+                1. Pokaż rynek
+                2. Pokaż portfel
+                3. Kup aktywo
+                4. Sprzedaj aktywo
+                5. Zapisz portfel
+                6. Wczytaj portfel
+                7. Aktualizuj ceny
+                0. Wyjdź
+                """);
+            String input = scanner.nextLine();
+            switch (input) {
+                case "1" -> displayMarket();
+                case "2" -> displayPortfolio();
+                case "3" -> handleBuy();
+                case "4" -> handleSell();
+                case "5" -> handleSave();
+                case "6" -> handleLoad();
+                case "7" -> handleUpdatePrices();
+                case "0" -> {
+                    System.out.println("Do widzenia!");
+                    return;
+                }
                 default -> System.out.println("Nieznana opcja!");
             }
         }
     }
 
-    private void printMenu() {
-        System.out.println("\nMENU:");
-        System.out.println("1. Wyświetl rynek");
-        System.out.println("2. Kup akcje/obligacje");
-        System.out.println("3. Sprzedaj akcje/obligacje");
-        System.out.println("4. Wyświetl portfel");
-        System.out.println("5. Aktualizuj ceny na rynku");
-        System.out.println("6. Zapisz stan portfela");
-        System.out.println("7. Wyjdź");
-    }
-
-    private int readInt(String prompt) {
-        while (true) {
-            System.out.print(prompt);
-            String input = scanner.nextLine();
-            try {
-                return Integer.parseInt(input);
-            } catch (NumberFormatException ex) {
-                System.out.println("Niepoprawna liczba! Spróbuj jeszcze raz.");
-            }
-        }
-    }
-
     private void displayMarket() {
-        System.out.println("\nAKTYWA NA RYNKU:");
-        for (Asset asset : market.getAssetMap().values()) {
-            System.out.printf("Symbol: %s | Nazwa: %s | Cena: %.2f%n",
-                    asset.getSymbol(), asset.getName(), asset.getCurrentPrice());
+        market.getAllAssets().values().forEach(a ->
+                System.out.printf("%s (%s): %.2f PLN%n", a.getName(), a.getSymbol(), a.getCurrentPrice()));
+    }
+    private void displayPortfolio() {
+        System.out.printf("Gotówka: %.2f PLN%n", portfolio.getCash());
+        portfolio.getPositions().values().forEach(pos ->
+                System.out.printf("%s: %d szt. x %.2f PLN = %.2f PLN%n",
+                        pos.asset().getSymbol(), pos.quantity(), pos.asset().getCurrentPrice(),
+                        pos.quantity() * pos.asset().getCurrentPrice()));
+    }
+
+    private void handleBuy() {
+        System.out.print("Podaj symbol aktywa: ");
+        String symbol = scanner.nextLine();
+        System.out.print("Ilość: ");
+        String quantityStr = scanner.nextLine();
+        if (quantityStr.isBlank()) {
+            System.out.println("Nie podano ilości!");
+            return;
+        }
+        int quantity = Integer.parseInt(quantityStr);
+        try {
+            portfolio.buy(symbol, quantity, market);
+            System.out.println("Kupiono!");
+        } catch (Exception e) {
+            System.out.println("Błąd przy kupnie: " + e.getMessage());
         }
     }
 
-    private void handleBuyAction() {
-        System.out.print("Podaj symbol aktywa do zakupu: ");
-        String symbol = scanner.nextLine().trim();
-        int quantity = readInt("Podaj ilość do zakupu: ");
-        try {
-            currentPortfolio.buy(symbol, quantity, market);
-            System.out.println("Zakupiono " + quantity + " sztuk " + symbol);
-        } catch (InsufficientFundsException | AssetNotFoundException | IllegalArgumentException e) {
-            System.out.println("Błąd przy zakupie: " + e.getMessage());
+    private void handleSell() {
+        System.out.print("Podaj symbol aktywa: ");
+        String symbol = scanner.nextLine();
+        System.out.print("Ilość: ");
+        String quantityStr = scanner.nextLine();
+        if (quantityStr.isBlank()) {
+            System.out.println("Nie podano ilości!");
+            return;
         }
-    }
-
-    private void handleSellAction() {
-        System.out.print("Podaj symbol aktywa do sprzedaży: ");
-        String symbol = scanner.nextLine().trim();
-        int quantity = readInt("Podaj ilość do sprzedaży: ");
+        int quantity = Integer.parseInt(quantityStr);
         try {
-            currentPortfolio.sell(symbol, quantity, market);
-            System.out.println("Sprzedano " + quantity + " sztuk " + symbol);
-        } catch (InsufficientAssetsException | AssetNotFoundException | IllegalArgumentException e) {
+            portfolio.sell(symbol, quantity, market);
+            System.out.println("Sprzedano!");
+        } catch (Exception e) {
             System.out.println("Błąd przy sprzedaży: " + e.getMessage());
         }
     }
 
-    private void displayPortfolio() {
-        System.out.printf("Środki dostępne: %.2f%n", currentPortfolio.getCash());
-        System.out.println("Aktywa w portfelu:");
-        if (currentPortfolio.getPositions().isEmpty()) {
-            System.out.println("(Brak aktywów w portfelu)");
-        } else {
-            for (PortfolioPosition position : currentPortfolio.getPositions().values()) {
-                System.out.printf("%s: %d sztuk%n", position.asset().getSymbol(), position.quantity());
-            }
+    private void handleSave() {
+        try {
+            portfolioService.save(portfolio);
+            System.out.println("Portfel zapisany.");
+        } catch (Exception e) {
+            System.out.println("Błąd przy zapisie: " + e.getMessage());
         }
     }
+
+    private void handleLoad() {
+        try {
+            Portfolio p = portfolioService.load().orElse(null);
+            if (p != null) {
+                this.portfolio = p;
+                System.out.println("Portfel wczytany.");
+            } else {
+                System.out.println("Brak zapisanego portfela.");
+            }
+        } catch (Exception e) {
+            System.out.println("Błąd przy wczytywaniu: " + e.getMessage());
+        }
+    }
+
 
     private void handleUpdatePrices() {
-        market.updateAssetPrices();
-        System.out.println("Ceny aktywów zostały zaktualizowane.");
-    }
-
-    private void handleSaveAction() {
-        try {
-            portfolioService.save(currentPortfolio);
-            System.out.println("Portfel zapisany pomyślnie.");
-        } catch (Exception e) {
-            System.out.println("Błąd przy zapisie portfela: " + e.getMessage());
-        }
-    }
-
-    private boolean handleExit() {
-        System.out.print("Czy chcesz zapisać portfel przed wyjściem? (T/n): ");
-        String response = scanner.nextLine().trim().toLowerCase();
-        if (!response.equals("n")) {
-            handleSaveAction();
-        }
-        System.out.println("Do widzenia!");
-        return true;
+        market.updatePrices();
+        System.out.println("Ceny zostały zaktualizowane.");
     }
 }

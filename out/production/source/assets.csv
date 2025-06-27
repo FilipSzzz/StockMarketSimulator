@@ -1,0 +1,12 @@
+symbol,name,type,initial_price
+AAPL,Apple Inc.,stock,150.00
+GOOGL,Alphabet Inc.,stock,2800.00
+MSFT,Microsoft Corporation,stock,300.00
+AMZN,Amazon.com Inc.,stock,3500.00
+EDO, EDO,bond, 100.00
+ABC,ABC,bond, 10
+NVI,Nvidia Corporation,stock,600.00
+TSLA,Tesla Inc.,stock,700.00
+SPY,Spotify Technology S.A.,stock,250.00
+
+

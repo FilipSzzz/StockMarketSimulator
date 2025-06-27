@@ -14,6 +14,7 @@ public class StockMarketApp {
         Market market = new Market(assetRepo);
         Portfolio portfolio = portfolioService.load().orElse(new Portfolio(10_000));
         ConsoleUI ui = new ConsoleUI(portfolio, market, portfolioService);
+
         ui.start();
     }
 }
